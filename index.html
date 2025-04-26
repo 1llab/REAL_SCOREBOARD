@@ -109,23 +109,20 @@
   </footer>
 
   <script>
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJnHkPkk7l1G3OPMqGoGhgyE9CSqu_D6zFVoxOfCBd8kFAZmAwdlUXwh-P-XJCu0GLeSH82pjNv__K/pub?output=csv';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyNM4lmdNR46FIwvu1PZv9oe4wZ2F5z5ffNV67zUj-ygD73Ag6lLtb9Zs8fBjp6vlBXsA/exec';
 
-    async function fetchData() {
-      const response = await fetch(SHEET_URL + `&dummy=${Date.now()}`);
-      const data = await response.text();
-      const rows = data.split('\n').slice(1);
-      const teams = rows.map(row => {
-        const cols = row.split(',');
-        return {
-          team: cols[0],
-          sum: parseInt(cols[11]),
-          rank: parseInt(cols[12])
-        };
-      }).filter(team => !isNaN(team.rank));
+async function fetchData() {
+  const response = await fetch(SHEET_URL);
+  const data = await response.json();
+  
+  const teams = data.slice(1).map(cols => ({
+    team: cols[0],
+    sum: parseInt(cols[11]),
+    rank: parseInt(cols[12])
+  })).filter(team => !isNaN(team.rank));
 
-      renderTeams(teams);
-    }
+  renderTeams(teams);
+}
 
     function renderTeams(teams) {
       const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
