@@ -131,25 +131,27 @@
     }
 
     function renderTeams(teams) {
-      const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
+  const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
 
-      document.getElementById('first-team').textContent = first.team;
-      document.getElementById('first-score').textContent = `${first.sum}점`;
+  document.getElementById('first-team').textContent = first.team;
+  document.getElementById('first-score').textContent = `${first.sum}점`;
 
-      document.getElementById('second-team').textContent = second.team;
-      document.getElementById('second-score').textContent = `${second.sum}점`;
+  document.getElementById('second-team').textContent = second.team;
+  document.getElementById('second-score').textContent = `${second.sum}점`;
 
-      document.getElementById('third-team').textContent = third.team;
-      document.getElementById('third-score').textContent = `${third.sum}점`;
+  document.getElementById('third-team').textContent = third.team;
+  document.getElementById('third-score').textContent = `${third.sum}점`;
 
-      const listEl = document.getElementById('team-list');
-      for (let i = 3; i < teams.length; i++) {
-        const t = teams[i];
-        listEl.innerHTML += `
-          <div class="team-item">${t.rank}등 - ${t.team} (${t.sum}점)</div>
-        `;
-      }
-    }
+  const listEl = document.getElementById('team-list');
+  listEl.innerHTML = ''; // 🔥🔥🔥 여기! 리스트 초기화하는 코드!
+
+  for (let i = 0; i < rest.length; i++) {
+    const t = rest[i];
+    listEl.innerHTML += `
+      <div class="team-item">${t.rank}등 - ${t.team} (${t.sum}점)</div>
+    `;
+  }
+}
 
     fetchData();
     setInterval(fetchData, 5000); // 5000 밀리초 = 5초
