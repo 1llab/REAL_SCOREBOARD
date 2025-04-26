@@ -41,17 +41,9 @@
       justify-content: flex-end;
     }
 
-    .podium-item.first {
-      height: 200px;
-    }
-
-    .podium-item.second {
-      height: 150px;
-    }
-
-    .podium-item.third {
-      height: 120px;
-    }
+    .podium-item.first { height: 200px; }
+    .podium-item.second { height: 150px; }
+    .podium-item.third { height: 120px; }
 
     .medal {
       font-size: 2em;
@@ -64,33 +56,34 @@
     }
 
     .team-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 40px;
-  padding: 0;
-  gap: 10px;
-}
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+      padding: 0;
+      gap: 10px;
+    }
 
-.team-item {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 10px 20px;
-  border-radius: 12px;
-  width: 300px;
-  text-align: left;
-  font-size: 1.1em;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-}
+    .team-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 12px;
+      width: 300px;
+      text-align: left;
+      font-size: 1.1em;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
 
-.team-item:hover {
-  transform: scale(1.02);
-}
+    .team-item:hover {
+      transform: scale(1.02);
+    }
 
   </style>
 </head>
 <body>
   <h1>🏆 체육대회 점수판 🏆</h1>
+
   <div class="podium" id="podium">
     <div class="podium-item second">
       <div class="medal">🥈</div>
@@ -110,6 +103,10 @@
   </div>
 
   <div class="team-list" id="team-list"></div>
+
+  <footer style="margin-top: 60px; margin-bottom: 60px; font-size: 1em; color: #f0f0f0; font-weight: bold;">
+    made by 오심균, 박지환 of LOGICODE
+  </footer>
 
   <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJnHkPkk7l1G3OPMqGoGhgyE9CSqu_D6zFVoxOfCBd8kFAZmAwdlUXwh-P-XJCu0GLeSH82pjNv__K/pub?output=csv';
@@ -131,33 +128,35 @@
     }
 
     function renderTeams(teams) {
-  const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
+      const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
 
-  document.getElementById('first-team').textContent = first.team;
-  document.getElementById('first-score').textContent = `${first.sum}점`;
+      document.getElementById('first-team').textContent = first.team;
+      document.getElementById('first-score').textContent = `${first.sum}점`;
 
-  document.getElementById('second-team').textContent = second.team;
-  document.getElementById('second-score').textContent = `${second.sum}점`;
+      document.getElementById('second-team').textContent = second.team;
+      document.getElementById('second-score').textContent = `${second.sum}점`;
 
-  document.getElementById('third-team').textContent = third.team;
-  document.getElementById('third-score').textContent = `${third.sum}점`;
+      document.getElementById('third-team').textContent = third.team;
+      document.getElementById('third-score').textContent = `${third.sum}점`;
 
-  const listEl = document.getElementById('team-list');
-  listEl.innerHTML = ''; // 🔥🔥🔥 여기! 리스트 초기화하는 코드!
+      const listEl = document.getElementById('team-list');
+      listEl.innerHTML = '';
 
-  for (let i = 0; i < rest.length; i++) {
-    const t = rest[i];
-    listEl.innerHTML += `
-      <div class="team-item">${t.rank}등 - ${t.team} (${t.sum}점)</div>
-    `;
-  }
-}
+      for (let i = 0; i < rest.length; i++) {
+        const t = rest[i];
+        listEl.innerHTML += `
+          <div class="team-item">${t.rank}등 - ${t.team} (${t.sum}점)</div>
+        `;
+      }
+    }
 
-    fetchData();
-    setInterval(fetchData, 5000); // 5000 밀리초 = 5초
+    async function start() {
+      await fetchData();
+      setInterval(fetchData, 5000); // 5초마다 데이터 새로 불러오기
+    }
+
+    start();
   </script>
+
 </body>
-  <footer style="margin-top: 60px; margin-bottom: 60px; font-size: 1em; color: #f0f0f0; font-weight: bold;">
-  made by 오심균, 박지환 of LOGICODE
-</footer>
 </html>
