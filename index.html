@@ -112,7 +112,7 @@
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSJnHkPkk7l1G3OPMqGoGhgyE9CSqu_D6zFVoxOfCBd8kFAZmAwdlUXwh-P-XJCu0GLeSH82pjNv__K/pub?output=csv';
 
     async function fetchData() {
-      const response = await fetch(SHEET_URL);
+      const response = await fetch(SHEET_URL + `&dummy=${Date.now()}`);
       const data = await response.text();
       const rows = data.split('\n').slice(1);
       const teams = rows.map(row => {
