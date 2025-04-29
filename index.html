@@ -130,60 +130,41 @@
     </div>
   </footer>
 
-  <script>
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyf_v4V7a0rFRSqwBlC9NaCPkcENrynbzRru41h0FVEsj9le46dtpKcLyKsyjzJ-6ZgfA/exec';
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-  async function fetchData() {
-    try {
-      const response = await fetch(SHEET_URL);
-      const data = await response.json(); // JSON 데이터 받아오기
-      console.log(data); // 콘솔에서 구조 확인
+    const firebaseConfig = {
+      apiKey: "AIzaSyAnDRx92zLuNTdH8VAxZZ2C0uQKYp9seoo",
+      authDomain: "scoreboardmaking-cf122.firebaseapp.com",
+      databaseURL: "https://scoreboardmaking-cf122-default-rtdb.firebaseio.com",
+      projectId: "scoreboardmaking-cf122",
+      storageBucket: "scoreboardmaking-cf122.appspot.com",
+      messagingSenderId: "646226081008",
+      appId: "1:646226081008:web:3787b2593c1375cd393e35",
+      measurementId: "G-4XMMT0PXY6"
+    };
 
-    // 데이터를 팀 객체 배열로 변환
-      const teams = data.slice(1).map(cols => ({
-        team: cols[0],
-        sum: parseInt(cols[11]),
-        rank: parseInt(cols[12])
-      })).filter(team => !isNaN(team.rank));
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // 팀 정보 렌더링
+    const scoreboardRef = ref(db, 'scoreboard'); // scoreboard 경로에 저장된 데이터
+
+    onValue(scoreboardRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+
+    // 데이터를 배열로 변환
+      const teams = Object.values(data).map(t => ({
+        team: t.team,
+        sum: parseInt(t.sum),
+        rank: parseInt(t.rank)
+      }));
+
       renderTeams(teams);
-    } catch (error) {
-      console.error('데이터를 불러오는 데 실패했습니다:', error);
-    }
-  }
-
-
-    function renderTeams(teams) {
-      const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
-
-      document.getElementById('first-team').textContent = first?.team ?? '';
-      document.getElementById('first-score').textContent = first ? `${first.sum}점` : '';
-
-      document.getElementById('second-team').textContent = second?.team ?? '';
-      document.getElementById('second-score').textContent = second ? `${second.sum}점` : '';
-
-      document.getElementById('third-team').textContent = third?.team ?? '';
-      document.getElementById('third-score').textContent = third ? `${third.sum}점` : '';
-
-      const listEl = document.getElementById('team-list');
-      listEl.innerHTML = '';
-
-      for (let i = 0; i < rest.length; i++) {
-        const t = rest[i];
-        listEl.innerHTML += `
-          <div class="team-item">${t.rank}등 - ${t.team} (${t.sum}점)</div>
-        `;
-      }
-    }
-
-    async function start() {
-      await fetchData();
-      setInterval(fetchData, 60000); // 1분(60000ms)마다 데이터 새로 불러오기
-    }
-
-    start();
+    });
   </script>
 
+  
 </body>
 </html>
