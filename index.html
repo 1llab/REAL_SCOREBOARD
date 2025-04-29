@@ -134,23 +134,25 @@
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyf_v4V7a0rFRSqwBlC9NaCPkcENrynbzRru41h0FVEsj9le46dtpKcLyKsyjzJ-6ZgfA/exec';
 
   async function fetchData() {
-    const response = await fetch(SHEET_URL);
-    const data = await response.json(); // 여기가 JSON
-    console.log(data); // 콘솔에서 구조 확인
+    try {
+      const response = await fetch(SHEET_URL);
+      const data = await response.json(); // JSON 데이터 받아오기
+      console.log(data); // 콘솔에서 구조 확인
+
+    // 데이터를 팀 객체 배열로 변환
+      const teams = data.slice(1).map(cols => ({
+        team: cols[0],
+        sum: parseInt(cols[11]),
+        rank: parseInt(cols[12])
+      })).filter(team => !isNaN(team.rank));
+
+    // 팀 정보 렌더링
+      renderTeams(teams);
+    } catch (error) {
+      console.error('데이터를 불러오는 데 실패했습니다:', error);
+    }
   }
 
-        
-        const teams = data.slice(1).map(cols => ({
-          team: cols[0],
-          sum: parseInt(cols[11]),
-          rank: parseInt(cols[12])
-        })).filter(team => !isNaN(team.rank));
-
-        renderTeams(teams);
-      } catch (error) {
-        console.error('데이터를 불러오는 데 실패했습니다:', error);
-      }
-    }
 
     function renderTeams(teams) {
       const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
