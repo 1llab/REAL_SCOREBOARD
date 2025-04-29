@@ -79,6 +79,22 @@
       transform: scale(1.02);
     }
 
+    footer {
+      margin-top: 60px;
+      margin-bottom: 60px;
+      font-size: 1em;
+      color: #f0f0f0;
+      font-weight: bold;
+    }
+
+    footer a {
+      color: #f0f0f0;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -104,49 +120,47 @@
 
   <div class="team-list" id="team-list"></div>
 
-  <footer style="margin-top: 60px; margin-bottom: 60px; font-size: 1em; color: #f0f0f0; font-weight: bold;">
+  <footer>
     made by 오심균, 박지환, 조순권 of LOGICODE
+    <div style="margin-top: 20px;">
+      <a href="https://1llab.github.io/Real_List_Score/" target="_blank">📄 개별 게임 당 점수 진행 상황 확인하기</a>
+    </div>
+    <div style="margin-top: 20px;">
+      <a href="https://youtu.be/kQUP6xD7E6E?si=hTgofd51LKo5zdBI" target="_blank">🐳🐋</a>
+    </div>
   </footer>
 
-  <footer style="margin-bottom: 60px;">
-    <a href="https://1llab.github.io/Real_List_Score/" target="_blank">
-    📄 개별 게임 당 점수 진행 상황 확인하기
-    </a>
-  </footer>
-
-  <footer style="margin-bottom: 60px;">
-    <a href="https://youtu.be/kQUP6xD7E6E?si=hTgofd51LKo5zdBI?t=125" target="_blank">
-    🐳🐋
-    </a>
-  </footer>
-  
   <script>
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzdbT0yR2iEYQTWrt4UpubT3MKX-OZtLTlPGxCqOL3ni33eOUjoKYdt9X0_NW3U413V1g/exec';
 
-async function fetchData() {
-  const response = await fetch(SHEET_URL);
-  const data = await response.json();
-  
-  const teams = data.slice(1).map(cols => ({
-    team: cols[0],
-    sum: parseInt(cols[11]),
-    rank: parseInt(cols[12])
-  })).filter(team => !isNaN(team.rank));
+    async function fetchData() {
+      try {
+        const response = await fetch(SHEET_URL);
+        const data = await response.json();
+        
+        const teams = data.slice(1).map(cols => ({
+          team: cols[0],
+          sum: parseInt(cols[11]),
+          rank: parseInt(cols[12])
+        })).filter(team => !isNaN(team.rank));
 
-  renderTeams(teams);
-}
+        renderTeams(teams);
+      } catch (error) {
+        console.error('데이터를 불러오는 데 실패했습니다:', error);
+      }
+    }
 
     function renderTeams(teams) {
       const [first, second, third, ...rest] = teams.sort((a, b) => a.rank - b.rank);
 
-      document.getElementById('first-team').textContent = first.team;
-      document.getElementById('first-score').textContent = `${first.sum}점`;
+      document.getElementById('first-team').textContent = first?.team ?? '';
+      document.getElementById('first-score').textContent = first ? `${first.sum}점` : '';
 
-      document.getElementById('second-team').textContent = second.team;
-      document.getElementById('second-score').textContent = `${second.sum}점`;
+      document.getElementById('second-team').textContent = second?.team ?? '';
+      document.getElementById('second-score').textContent = second ? `${second.sum}점` : '';
 
-      document.getElementById('third-team').textContent = third.team;
-      document.getElementById('third-score').textContent = `${third.sum}점`;
+      document.getElementById('third-team').textContent = third?.team ?? '';
+      document.getElementById('third-score').textContent = third ? `${third.sum}점` : '';
 
       const listEl = document.getElementById('team-list');
       listEl.innerHTML = '';
@@ -161,7 +175,7 @@ async function fetchData() {
 
     async function start() {
       await fetchData();
-      setInterval(fetchData, 5000); // 5초마다 데이터 새로 불러오기
+      setInterval(fetchData, 60000); // 1분(60000ms)마다 데이터 새로 불러오기
     }
 
     start();
