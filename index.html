@@ -165,6 +165,34 @@
     });
   </script>
 
+  <script>
+    function renderTeams(teams) {
+    // 순위 정렬
+      const sorted = teams.sort((a, b) => a.rank - b.rank);
+
+    // 1~3등은 포디움에 표시
+      document.getElementById("first-team").textContent = sorted[0]?.team || "";
+      document.getElementById("first-score").textContent = sorted[0]?.sum || "";
+
+      document.getElementById("second-team").textContent = sorted[1]?.team || "";
+      document.getElementById("second-score").textContent = sorted[1]?.sum || "";
+
+      document.getElementById("third-team").textContent = sorted[2]?.team || "";
+      document.getElementById("third-score").textContent = sorted[2]?.sum || "";
+
+    // 나머지 팀들 출력
+      const list = document.getElementById("team-list");
+      list.innerHTML = ""; // 기존 내용 지우기
+
+      for (let i = 3; i < sorted.length; i++) {
+        const teamItem = document.createElement("div");
+        teamItem.className = "team-item";
+        teamItem.textContent = `${sorted[i].rank}등 - ${sorted[i].team} (${sorted[i].sum}점)`;
+        list.appendChild(teamItem);
+      }
+    }
+  </script>
+
   
 </body>
 </html>
