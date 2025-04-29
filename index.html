@@ -131,12 +131,14 @@
   </footer>
 
   <script>
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzdbT0yR2iEYQTWrt4UpubT3MKX-OZtLTlPGxCqOL3ni33eOUjoKYdt9X0_NW3U413V1g/exec';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycb.../exec';
 
-    async function fetchData() {
-      try {
-        const response = await fetch(SHEET_URL);
-        const data = await response.json();
+  async function fetchData() {
+    const response = await fetch(SHEET_URL);
+    const data = await response.json(); // 여기가 JSON
+    console.log(data); // 콘솔에서 구조 확인
+  }
+
         
         const teams = data.slice(1).map(cols => ({
           team: cols[0],
